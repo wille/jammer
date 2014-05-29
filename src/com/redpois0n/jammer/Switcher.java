@@ -3,7 +3,7 @@ package com.redpois0n.jammer;
 import de.mud.telnet.TelnetWrapper;
 
 public class Switcher implements Runnable {
-	
+		
 	private String address;
 	private int port;
 	private int interval;
@@ -34,9 +34,11 @@ public class Switcher implements Runnable {
 			
 			while (Main.running) {
 				Thread.sleep(interval * 1000L);
-				tn.send("signal NEWNYM\r\n");
+				tn.send("SIGNAL NEWNYM\r\n");
 				tn.waitfor("250 OK");
 			}
+			
+			tn.disconnect();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

@@ -19,7 +19,7 @@ public class Hammer implements Runnable {
 	public Hammer(String address, int port, boolean proxy, String phost, int pport) {
 		this.address = address;
 		this.port = port;
-		
+		this.proxy = proxy;
 		this.phost = phost;
 		this.pport = pport;
 	}
