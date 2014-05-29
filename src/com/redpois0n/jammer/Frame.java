@@ -26,6 +26,9 @@ public class Frame extends JFrame {
 	private JTextField txtAddress;
 	private JSpinner spPort;
 	private JTextField txtProxyHost;
+	private JSpinner spProxyPort;
+	private JButton btnStop;
+	private JButton btnStart;
 
 	public Frame() {
 		setResizable(false);
@@ -51,8 +54,8 @@ public class Frame extends JFrame {
 		
 		JLabel lblPort_1 = new JLabel("Port");
 		
-		JSpinner spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(9050, 1, 65535, 1));
+		spProxyPort = new JSpinner();
+		spProxyPort.setModel(new SpinnerNumberModel(9050, 1, 65535, 1));
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -63,7 +66,7 @@ public class Frame extends JFrame {
 						.addComponent(lblPort_1))
 					.addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
+						.addComponent(spProxyPort, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
 						.addComponent(txtProxyHost, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
@@ -76,28 +79,42 @@ public class Frame extends JFrame {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblPort_1)
-						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(spProxyPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(21, Short.MAX_VALUE))
 		);
 		panel_1.setLayout(gl_panel_1);
 		
-		JButton btnStart = new JButton("Start");
+		btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				start();
 			}
 		});
+		
+		JButton btnExit = new JButton("Exit");
+		
+		btnStop = new JButton("Stop");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				stop();
+			}
+		});
+		btnStop.setEnabled(false);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 247, GroupLayout.PREFERRED_SIZE)
 						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 247, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(211, Short.MAX_VALUE))
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addContainerGap(359, Short.MAX_VALUE)
-					.addComponent(btnStart)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addContainerGap(248, Short.MAX_VALUE)
+					.addComponent(btnStart, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnExit)
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
@@ -107,7 +124,10 @@ public class Frame extends JFrame {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
-					.addComponent(btnStart)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnExit)
+						.addComponent(btnStart)
+						.addComponent(btnStop))
 					.addContainerGap())
 		);
 		
@@ -152,12 +172,34 @@ public class Frame extends JFrame {
 		contentPane.setLayout(gl_contentPane);
 	}
 	
+	public void stop() {
+		Main.running = false;
+		
+		btnStart.setEnabled(true);
+		btnStop.setEnabled(false);
+		
+		setWindowTitle("Idle...");
+	}
+	
 	public void start() {
 		Main.running = true;
 		
+		btnStart.setEnabled(false);
+		btnStop.setEnabled(true);
+		
 		for (int i = 0; i < 256; i++) {
-			new Thread(new Hammer()).start();
+			new Thread(new Hammer(getAddress(), (Integer) spPort.getValue(), getProxyAddress(), (Integer) spProxyPort.getValue())).start();
 		}
+		
+		setWindowTitle("Busy...");
+	}
+	
+	public String getAddress() {
+		return txtAddress.getText().trim();
+	}
+	
+	public String getProxyAddress() {
+		return txtProxyHost.getText().trim();
 	}
 	
 	public static void setWindowTitle(String title) {

