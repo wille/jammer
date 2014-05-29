@@ -22,6 +22,8 @@ public class Switcher implements Runnable {
 			TelnetWrapper tn = new TelnetWrapper();
 			tn.connect(address, port);
 			
+			tn.login("", "");
+			
 			if (pass.length() == 0) {
 				tn.send("AUTHENTICATE\r\n");
 			} else {

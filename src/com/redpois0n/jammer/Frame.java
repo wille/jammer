@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
+import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
 public class Frame extends JFrame {
@@ -34,13 +35,14 @@ public class Frame extends JFrame {
 	private JSpinner spSwitcherDelay;
 	private JSpinner spSwitcherPort;
 	private JTextField txtSwitcherPass;
+	private JCheckBox chckbxEnableProxy;
 
 	public Frame() {
 		setResizable(false);
 		setTitle("jammer - Idle...");
 		instance = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 274, 419);
+		setBounds(100, 100, 274, 471);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -78,10 +80,13 @@ public class Frame extends JFrame {
 		txtSwitcherHost.setColumns(10);
 		
 		spSwitcherDelay = new JSpinner();
-		spSwitcherDelay.setModel(new SpinnerNumberModel(new Integer(1), null, null, new Integer(1)));
+		spSwitcherDelay.setModel(new SpinnerNumberModel(new Integer(15), null, null, new Integer(1)));
 		
 		txtSwitcherPass = new JTextField();
 		txtSwitcherPass.setColumns(10);
+		
+		chckbxEnableProxy = new JCheckBox("Enable");
+		chckbxEnableProxy.setSelected(true);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -90,30 +95,38 @@ public class Frame extends JFrame {
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+								.addComponent(separator, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblTorSwitcher)
+								.addGroup(gl_panel_1.createSequentialGroup()
+									.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+										.addComponent(label, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+										.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+									.addGap(29)
+									.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+										.addComponent(txtSwitcherHost, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING, false)
+											.addComponent(spSwitcherDelay, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(spSwitcherPort, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE))))
+								.addComponent(txtSwitcherPass, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap())
+						.addGroup(gl_panel_1.createSequentialGroup()
+							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblHost)
 								.addComponent(lblPort_1))
 							.addPreferredGap(ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
 							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
 								.addComponent(spProxyPort, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
-								.addComponent(txtProxyHost, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)))
-						.addComponent(separator, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTorSwitcher)
+								.addComponent(txtProxyHost, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
+							.addGap(8))
 						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(label, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-								.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-							.addGap(29)
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-								.addComponent(txtSwitcherHost, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
-								.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING, false)
-									.addComponent(spSwitcherDelay, Alignment.LEADING)
-									.addComponent(spSwitcherPort, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 61, Short.MAX_VALUE))))
-						.addComponent(txtSwitcherPass, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+							.addComponent(chckbxEnableProxy)
+							.addContainerGap(134, Short.MAX_VALUE))))
 		);
 		gl_panel_1.setVerticalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup()
+				.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+					.addComponent(chckbxEnableProxy)
+					.addGap(5)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblHost)
 						.addComponent(txtProxyHost, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -121,7 +134,7 @@ public class Frame extends JFrame {
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblPort_1)
 						.addComponent(spProxyPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addPreferredGap(ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 4, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblTorSwitcher)
@@ -139,7 +152,7 @@ public class Frame extends JFrame {
 					.addComponent(spSwitcherDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(txtSwitcherPass, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(22, Short.MAX_VALUE))
+					.addGap(27))
 		);
 		panel_1.setLayout(gl_panel_1);
 		
@@ -250,7 +263,7 @@ public class Frame extends JFrame {
 		new Thread(new Switcher(txtSwitcherHost.getText().trim(), (Integer) spSwitcherPort.getValue(), (Integer) spSwitcherDelay.getValue(), txtSwitcherPass.getText().trim())).start();
 		
 		for (int i = 0; i < 256; i++) {
-			new Thread(new Hammer(getAddress(), (Integer) spPort.getValue(), getProxyAddress(), (Integer) spProxyPort.getValue())).start();
+			new Thread(new Hammer(getAddress(), (Integer) spPort.getValue(), chckbxEnableProxy.isSelected(), getProxyAddress(), (Integer) spProxyPort.getValue())).start();
 		}
 		
 		setWindowTitle("Busy...");

