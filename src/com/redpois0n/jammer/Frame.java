@@ -33,13 +33,14 @@ public class Frame extends JFrame {
 	private JTextField txtSwitcherHost;
 	private JSpinner spSwitcherDelay;
 	private JSpinner spSwitcherPort;
+	private JTextField txtSwitcherPass;
 
 	public Frame() {
 		setResizable(false);
 		setTitle("jammer - Idle...");
 		instance = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 274, 386);
+		setBounds(100, 100, 274, 419);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -77,6 +78,10 @@ public class Frame extends JFrame {
 		txtSwitcherHost.setColumns(10);
 		
 		spSwitcherDelay = new JSpinner();
+		spSwitcherDelay.setModel(new SpinnerNumberModel(new Integer(1), null, null, new Integer(1)));
+		
+		txtSwitcherPass = new JTextField();
+		txtSwitcherPass.setColumns(10);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -102,7 +107,8 @@ public class Frame extends JFrame {
 								.addComponent(txtSwitcherHost, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
 								.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING, false)
 									.addComponent(spSwitcherDelay, Alignment.LEADING)
-									.addComponent(spSwitcherPort, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 61, Short.MAX_VALUE)))))
+									.addComponent(spSwitcherPort, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 61, Short.MAX_VALUE))))
+						.addComponent(txtSwitcherPass, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		gl_panel_1.setVerticalGroup(
@@ -131,7 +137,9 @@ public class Frame extends JFrame {
 						.addComponent(spSwitcherPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(spSwitcherDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(15, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtSwitcherPass, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(22, Short.MAX_VALUE))
 		);
 		panel_1.setLayout(gl_panel_1);
 		
@@ -238,6 +246,8 @@ public class Frame extends JFrame {
 		
 		btnStart.setEnabled(false);
 		btnStop.setEnabled(true);
+		
+		new Thread(new Switcher(txtSwitcherHost.getText().trim(), (Integer) spSwitcherPort.getValue(), (Integer) spSwitcherDelay.getValue(), txtSwitcherPass.getText().trim())).start();
 		
 		for (int i = 0; i < 256; i++) {
 			new Thread(new Hammer(getAddress(), (Integer) spPort.getValue(), getProxyAddress(), (Integer) spProxyPort.getValue())).start();

