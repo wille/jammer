@@ -37,6 +37,7 @@ public class Frame extends JFrame {
 	private JCheckBox chckbxEnableProxy;
 	private JCheckBox chckbxEnableTorSwitcher;
 	private JSpinner spMaxDelay;
+	private JSpinner spThreads;
 
 	public Frame() {
 		setResizable(false);
@@ -201,8 +202,8 @@ public class Frame extends JFrame {
 		
 		JLabel lblSeconds = new JLabel("seconds");
 		
-		JSpinner spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(256, 64, 4096, 1));
+		spThreads = new JSpinner();
+		spThreads.setModel(new SpinnerNumberModel(256, 64, 4096, 1));
 		
 		JLabel lblThreads = new JLabel("Threads");
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
@@ -215,7 +216,7 @@ public class Frame extends JFrame {
 						.addComponent(lblThreads, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
+						.addComponent(spThreads, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panel_2.createSequentialGroup()
 							.addComponent(spMaxDelay, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -231,7 +232,7 @@ public class Frame extends JFrame {
 						.addComponent(lblSeconds))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(spThreads, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblThreads))
 					.addContainerGap(113, Short.MAX_VALUE))
 		);
@@ -344,7 +345,7 @@ public class Frame extends JFrame {
 		if (chckbxEnableTorSwitcher.isSelected()) {
 			new Thread(new Switcher(txtSwitcherHost.getText().trim(), (Integer) spSwitcherPort.getValue(), (Integer) spSwitcherDelay.getValue(), txtSwitcherPass.getText().trim())).start();
 		}
-		for (int i = 0; i < 256; i++) {
+		for (int i = 0; i < (Integer) spThreads.getValue(); i++) {
 			Hammer hammer = new Hammer(getAddress(), (Integer) spPort.getValue(), chckbxEnableProxy.isSelected(), getProxyAddress(), (Integer) spProxyPort.getValue(), (Integer) spMaxDelay.getValue());
 			Hammer.THREADS.add(hammer);
 			new Thread(hammer).start();
