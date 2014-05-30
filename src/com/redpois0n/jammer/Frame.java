@@ -255,6 +255,16 @@ public class Frame extends JFrame {
 		btnStart.setEnabled(true);
 		btnStop.setEnabled(false);
 		
+		for (Hammer hammer : Hammer.THREADS) {
+			try {
+				hammer.getSocket().close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Hammer.THREADS.clear();
+		
 		setWindowTitle("Idle...");
 	}
 	
@@ -268,7 +278,9 @@ public class Frame extends JFrame {
 			new Thread(new Switcher(txtSwitcherHost.getText().trim(), (Integer) spSwitcherPort.getValue(), (Integer) spSwitcherDelay.getValue(), txtSwitcherPass.getText().trim())).start();
 		}
 		for (int i = 0; i < 256; i++) {
-			new Thread(new Hammer(getAddress(), (Integer) spPort.getValue(), chckbxEnableProxy.isSelected(), getProxyAddress(), (Integer) spProxyPort.getValue())).start();
+			Hammer hammer = new Hammer(getAddress(), (Integer) spPort.getValue(), chckbxEnableProxy.isSelected(), getProxyAddress(), (Integer) spProxyPort.getValue());
+			Hammer.THREADS.add(hammer);
+			new Thread(hammer).start();
 		}
 		
 		setWindowTitle("Busy...");

