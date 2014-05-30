@@ -36,6 +36,10 @@ public class Switcher implements Runnable {
 				Thread.sleep(interval * 1000L);
 				tn.send("SIGNAL NEWNYM\r\n");
 				tn.waitfor("250 OK");
+				
+				for (Hammer hammer : Hammer.THREADS) {
+					hammer.getSocket().close();
+				}
 			}
 			
 			tn.disconnect();
